@@ -7,10 +7,7 @@ class FakeApiSuccess extends ApiService {
   @override
   Future<List<dynamic>> getRestaurantList() async {
     return [
-      {
-        'id': '1',
-        'name': 'Test Restaurant',
-      }
+      {'id': '1', 'name': 'Test Restaurant'},
     ];
   }
 }
@@ -24,61 +21,30 @@ class FakeApiFailed extends ApiService {
 
 void main() {
   group('RestaurantProvider Test', () {
-    test(
-      'Initial state should be RestaurantLoading',
-      () {
-        final provider =
-            RestaurantProvider(
-          FakeApiSuccess(),
-        );
+    test('Initial state should be RestaurantLoading', () {
+      final provider = RestaurantProvider(FakeApiSuccess());
 
-        expect(
-          provider.state,
-          isA<RestaurantLoading>(),
-        );
-      },
-    );
+      expect(provider.state, isA<RestaurantLoading>());
+    });
 
-    test(
-      'Should return RestaurantLoaded when API succeeds',
-      () async {
-        final provider =
-            RestaurantProvider(
-          FakeApiSuccess(),
-        );
+    test('Should return RestaurantLoaded when API succeeds', () async {
+      final provider = RestaurantProvider(FakeApiSuccess());
 
-        await provider.fetchRestaurants();
+      await provider.fetchRestaurants();
 
-        expect(
-          provider.state,
-          isA<RestaurantLoaded>(),
-        );
+      expect(provider.state, isA<RestaurantLoaded>());
 
-        final state =
-            provider.state as RestaurantLoaded;
+      final state = provider.state as RestaurantLoaded;
 
-        expect(
-          state.restaurants.length,
-          1,
-        );
-      },
-    );
+      expect(state.restaurants.length, 1);
+    });
 
-    test(
-      'Should return RestaurantError when API fails',
-      () async {
-        final provider =
-            RestaurantProvider(
-          FakeApiFailed(),
-        );
+    test('Should return RestaurantError when API fails', () async {
+      final provider = RestaurantProvider(FakeApiFailed());
 
-        await provider.fetchRestaurants();
+      await provider.fetchRestaurants();
 
-        expect(
-          provider.state,
-          isA<RestaurantError>(),
-        );
-      },
-    );
+      expect(provider.state, isA<RestaurantError>());
+    });
   });
 }
