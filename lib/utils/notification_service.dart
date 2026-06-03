@@ -3,7 +3,8 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
-  static final NotificationService _instance = NotificationService._internal();
+  static final NotificationService _instance =
+      NotificationService._internal();
 
   factory NotificationService() => _instance;
 
@@ -15,26 +16,31 @@ class NotificationService {
   Future<void> init() async {
     tz.initializeTimeZones();
 
-    const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+    const AndroidInitializationSettings androidInitializationSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: androidInitializationSettings,
+        );
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
     );
-
-    const settings = InitializationSettings(android: androidSettings);
-
-    await flutterLocalNotificationsPlugin.initialize(settings);
   }
 
   Future<void> scheduleDailyReminder() async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
       'Restaurant Reminder',
-      'Saatnya makan siang 🍽️',
+      'Saatnya melihat rekomendasi restoran hari ini 🍽️',
       _nextInstanceOfElevenAM(),
       const NotificationDetails(
         android: AndroidNotificationDetails(
-          'daily_reminder',
+          'daily_reminder_channel',
           'Daily Reminder',
-          importance: Importance.high,
+          channelDescription: 'Daily restaurant reminder notification',
+          importance: Importance.max,
           priority: Priority.high,
         ),
       ),
@@ -48,9 +54,9 @@ class NotificationService {
   }
 
   tz.TZDateTime _nextInstanceOfElevenAM() {
-    final now = tz.TZDateTime.now(tz.local);
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
 
-    var scheduledDate = tz.TZDateTime(
+    tz.TZDateTime scheduledDate = tz.TZDateTime(
       tz.local,
       now.year,
       now.month,
@@ -60,7 +66,9 @@ class NotificationService {
     );
 
     if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
+      scheduledDate = scheduledDate.add(
+        const Duration(days: 1),
+      );
     }
 
     return scheduledDate;
