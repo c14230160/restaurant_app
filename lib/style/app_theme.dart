@@ -3,40 +3,57 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
     brightness: Brightness.light,
-    primarySwatch: Colors.deepOrange,
+
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.deepOrange,
+      brightness: Brightness.light,
+    ),
+
     scaffoldBackgroundColor: Colors.white,
-    fontFamily: GoogleFonts.poppins().fontFamily,
+
+    textTheme: GoogleFonts.poppinsTextTheme(),
 
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.deepOrange,
-      foregroundColor: Colors.white,
+      centerTitle: true,
       elevation: 0,
     ),
 
     cardTheme: CardThemeData(
-      color: Colors.white,
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
     ),
   );
 
   static ThemeData darkTheme = ThemeData(
+    useMaterial3: true,
     brightness: Brightness.dark,
-    primarySwatch: Colors.deepOrange,
+
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.deepOrange,
+      brightness: Brightness.dark,
+    ),
+
     scaffoldBackgroundColor: const Color(0xFF121212),
-    fontFamily: GoogleFonts.poppins().fontFamily,
+
+    textTheme: GoogleFonts.poppinsTextTheme(
+      ThemeData.dark().textTheme,
+    ),
 
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF1E1E1E),
-      foregroundColor: Colors.white,
+      centerTitle: true,
       elevation: 0,
     ),
 
     cardTheme: CardThemeData(
       color: const Color(0xFF1E1E1E),
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
     ),
   );
 }

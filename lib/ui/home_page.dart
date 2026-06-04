@@ -24,7 +24,9 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const FavoritePage()),
+                MaterialPageRoute(
+                  builder: (_) => const FavoritePage(),
+                ),
               );
             },
           ),
@@ -33,15 +35,18 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const SettingsPage()),
+                MaterialPageRoute(
+                  builder: (_) => const SettingsPage(),
+                ),
               );
             },
           ),
         ],
       ),
-
       body: switch (state) {
-        RestaurantLoading() => const Center(child: CircularProgressIndicator()),
+        RestaurantLoading() => const Center(
+          child: CircularProgressIndicator(),
+        ),
 
         RestaurantLoaded() => RefreshIndicator(
           onRefresh: () async {
@@ -58,7 +63,9 @@ class HomePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => DetailPage(restaurant: restaurant),
+                      builder: (_) => DetailPage(
+                        restaurant: restaurant,
+                      ),
                     ),
                   );
                 },
@@ -83,18 +90,58 @@ class HomePage extends StatelessWidget {
                           width: double.infinity,
                           height: 220,
                           fit: BoxFit.cover,
+
+                          loadingBuilder:
+                              (
+                                context,
+                                child,
+                                loadingProgress,
+                              ) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                }
+
+                                return const SizedBox(
+                                  height: 220,
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              },
+
+                          errorBuilder:
+                              (
+                                context,
+                                error,
+                                stackTrace,
+                              ) {
+                                return Container(
+                                  width: double.infinity,
+                                  height: 220,
+                                  color: Colors.grey.shade300,
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      size: 50,
+                                    ),
+                                  ),
+                                );
+                              },
                         ),
                       ),
+
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
                           children: [
                             Text(
                               restaurant['name'],
                               style: const TextStyle(
                                 fontSize: 22,
-                                fontWeight: FontWeight.bold,
+                                fontWeight:
+                                    FontWeight.bold,
                               ),
                             ),
 
@@ -105,13 +152,16 @@ class HomePage extends StatelessWidget {
                                 Icon(
                                   Icons.location_on,
                                   color:
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.red,
+                                      Theme.of(context)
+                                                  .brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.red,
                                 ),
                                 const SizedBox(width: 4),
-                                Text(restaurant['city']),
+                                Text(
+                                  restaurant['city'],
+                                ),
                               ],
                             ),
 
@@ -119,9 +169,15 @@ class HomePage extends StatelessWidget {
 
                             Row(
                               children: [
-                                const Icon(Icons.star, color: Colors.orange),
+                                const Icon(
+                                  Icons.star,
+                                  color: Colors.orange,
+                                ),
                                 const SizedBox(width: 4),
-                                Text(restaurant['rating'].toString()),
+                                Text(
+                                  restaurant['rating']
+                                      .toString(),
+                                ),
                               ],
                             ),
                           ],
@@ -137,13 +193,20 @@ class HomePage extends StatelessWidget {
 
         RestaurantError() => Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment:
+                MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 80, color: Colors.red),
+              const Icon(
+                Icons.error_outline,
+                size: 80,
+                color: Colors.red,
+              ),
               const SizedBox(height: 16),
               const Text(
                 'Failed to load restaurants',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(
+                  fontSize: 18,
+                ),
               ),
               const SizedBox(height: 16),
               ElevatedButton(

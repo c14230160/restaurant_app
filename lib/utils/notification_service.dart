@@ -21,12 +21,20 @@ class NotificationService {
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
-          android: androidInitializationSettings,
-        );
+      android: androidInitializationSettings,
+    );
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
     );
+
+    final androidPlugin =
+        flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>();
+
+    await androidPlugin?.requestNotificationsPermission();
+    await androidPlugin?.requestExactAlarmsPermission();
   }
 
   Future<void> scheduleDailyReminder() async {
@@ -54,9 +62,9 @@ class NotificationService {
   }
 
   tz.TZDateTime _nextInstanceOfElevenAM() {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    final now = tz.TZDateTime.now(tz.local);
 
-    tz.TZDateTime scheduledDate = tz.TZDateTime(
+    var scheduledDate = tz.TZDateTime(
       tz.local,
       now.year,
       now.month,
