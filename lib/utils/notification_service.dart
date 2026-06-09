@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone_latest/flutter_native_timezone_latest.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -10,22 +11,32 @@ class NotificationService {
 
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  final FlutterLocalNotificationsPlugin
+      flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
+    // Initialize timezone
     tz.initializeTimeZones();
 
-    const AndroidInitializationSettings androidInitializationSettings =
+    // Set timezone sesuai device
+    final String currentTimeZone =
+        await FlutterNativeTimezoneLatest.getLocalTimezone();
+
+    tz.setLocalLocation(
+      tz.getLocation(currentTimeZone),
+    );
+
+    const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const InitializationSettings initializationSettings =
+    const InitializationSettings settings =
         InitializationSettings(
-      android: androidInitializationSettings,
+      android: androidSettings,
     );
 
     await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
+      settings,
     );
 
     final androidPlugin =
@@ -47,13 +58,16 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'daily_reminder_channel',
           'Daily Reminder',
-          channelDescription: 'Daily restaurant reminder notification',
+          channelDescription:
+              'Daily restaurant reminder notification',
           importance: Importance.max,
           priority: Priority.high,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
+      androidScheduleMode:
+          AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents:
+          DateTimeComponents.time,
     );
   }
 
@@ -74,7 +88,8 @@ class NotificationService {
     );
 
     if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(
+      scheduledDate =
+          scheduledDate.add(
         const Duration(days: 1),
       );
     }
